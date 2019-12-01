@@ -29,8 +29,6 @@ namespace WpfApp2.deadlock
         public async Task demonstrateDeadlock(bool enableDeadLock)
         {
             mWindow.infoLabel.Text = "Started...";
-            // sample UI-thread block in order to show deadlock`s behaviour
-            await Task.Delay(700);
             var mTask = getJsonAsync();
             if (!enableDeadLock)
             {

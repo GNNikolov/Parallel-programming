@@ -10,9 +10,15 @@ namespace WpfApp2
         public MainWindow()
         {
             InitializeComponent();
+
+        }
+        private void onClickListener(object sender, RoutedEventArgs e)
+        {
             var mLock = new deadlock.DeadLock(this);
-            mLock.demonstrateDeadlock(false);
+            mLock.demonstrateDeadlock(true);
 
         }
     }
+
+
 }
