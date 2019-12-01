@@ -1,2 +1,0 @@
-# Parallel-programming
-University project
