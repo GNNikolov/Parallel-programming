@@ -9,6 +9,7 @@ namespace WpfApp2.livelock
     {
         private string resourse = "string has to be refactored";
         private readonly Employee[] employees = new Employee[2];
+        private static readonly int TASK_SLEEP_DELAY = 300;
 
         public LiveLock(MainWindow mainWindow) : base(mainWindow)
         {
@@ -29,12 +30,8 @@ namespace WpfApp2.livelock
             {
                 while (employees[0].is_active)
                 {
-                    await Task.Delay(500);
-                    //Post message on UI-thread
-                    System.Windows.Application.Current.Dispatcher.Invoke(delegate
-                    {
-                        mWindow.infoLabel.Text = employees[0].employee_name + "\t is working";
-                    });
+                    await Task.Delay(TASK_SLEEP_DELAY);
+                    runOnUiThread(employees[0]);
                 }
                 employees[1].is_active = false;
                 return employees[1].employee_name + " has completed the task";
@@ -44,18 +41,22 @@ namespace WpfApp2.livelock
             {
                 while (employees[1].is_active)
                 {
-                    await Task.Delay(500);
-                    //Post message on UI-thread
-                    System.Windows.Application.Current.Dispatcher.Invoke(delegate
-                    {
-                        mWindow.infoLabel.Text = employees[1].employee_name + "\t is working";
-                    });
+                    await Task.Delay(TASK_SLEEP_DELAY);
+                    runOnUiThread(employees[1]);
                 }
                 employees[0].is_active = false;
                 return employees[0].employee_name + " has completed the task";
             });
             var result = await Task.WhenAll(new Task<string>[] { firstTask, secondTask });
             mWindow.infoLabel.Text = result[0];
+        }
+
+        //Use this method to update ui from background thread
+        private void runOnUiThread(Employee emloyee) {
+            System.Windows.Application.Current.Dispatcher.Invoke(delegate
+            {
+                mWindow.infoLabel.Text = emloyee.employee_name + " is working...";
+            });
         }
 
     }
