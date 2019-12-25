@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using WpfApp2.models;
 
@@ -24,34 +25,38 @@ namespace WpfApp2.livelock
 
         public override async Task showLock(bool enableLock)
         {
-            var firstTask = doWork(employees[0], employees[1]);
-            var secondTask = doWork(employees[1], employees[0]);
-            var result = await Task.WhenAll(new Task<string>[] { firstTask, secondTask });
-            mWindow.infoLabel.Text = result[0];    
-        }
-
-        private async Task<string> doWork(Employee first, Employee second)
-        {
-            string result = null;
-            await Task.Run(() =>
+            Task<string> firstTask = Task.Run(async () =>
             {
-                result = processWork(first, second);
+                while (employees[0].is_active)
+                {
+                    await Task.Delay(500);
+                    //Post message on UI-thread
+                    System.Windows.Application.Current.Dispatcher.Invoke(delegate
+                    {
+                        mWindow.infoLabel.Text = employees[0].employee_name + "\t is working";
+                    });
+                }
+                employees[1].is_active = false;
+                return employees[1].employee_name + " has completed the task";
             });
-            return result;
+
+            Task<string> secondTask = Task.Run(async () =>
+            {
+                while (employees[1].is_active)
+                {
+                    await Task.Delay(500);
+                    //Post message on UI-thread
+                    System.Windows.Application.Current.Dispatcher.Invoke(delegate
+                    {
+                        mWindow.infoLabel.Text = employees[1].employee_name + "\t is working";
+                    });
+                }
+                employees[0].is_active = false;
+                return employees[0].employee_name + " has completed the task";
+            });
+            var result = await Task.WhenAll(new Task<string>[] { firstTask, secondTask });
+            mWindow.infoLabel.Text = result[0];
         }
 
-        private string processWork(Employee first, Employee second)
-        {
-            while (first.is_active)
-            {
-                Task.Delay(2 * 1000);
-                //Post message on UI-thread
-                System.Windows.Application.Current.Dispatcher.Invoke(delegate {
-                    mWindow.infoLabel.Text = first.employee_name + "\t is working";
-                });
-            }
-            second.is_active = false;
-            return resourse.ToUpper();
-        }
     }
 }
