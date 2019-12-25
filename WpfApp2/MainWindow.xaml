@@ -6,8 +6,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="320" Width="400">
     <Grid>
-        <TextBlock Name ="infoLabel" Text="Info data here" HorizontalAlignment="Center" Margin="0,80,0,0" VerticalAlignment="Top" Width="75"/>
-            
+        <TextBlock Name ="infoLabel" Text="Info data here" HorizontalAlignment="Left" Margin="108,80,108,0" VerticalAlignment="Top" Width="175"/>
+
         <Button Name ="action" Content="Start"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="175" Margin="0,0,0,80" Height="45" Click="onClickListener"/>
 
     </Grid>

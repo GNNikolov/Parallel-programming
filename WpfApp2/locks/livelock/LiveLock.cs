@@ -15,7 +15,7 @@ namespace WpfApp2.livelock
             {
                 employees[j] = new Employee()
                 {
-                    employee_name = string.Format("Employee%d", j),
+                    employee_name = "Employee" + j.ToString(),
                     employee_age = new Random().Next(30, 40).ToString(),
                     is_active = true
                 };
@@ -44,10 +44,11 @@ namespace WpfApp2.livelock
         {
             while (first.is_active)
             {
-                /* Livelock loop will
-                 * happen here. Second is waiting
-                 * for the first to finish it`s execution.
-                 */
+                Task.Delay(2 * 1000);
+                //Post message on UI-thread
+                System.Windows.Application.Current.Dispatcher.Invoke(delegate {
+                    mWindow.infoLabel.Text = first.employee_name + "\t is working";
+                });
             }
             second.is_active = false;
             return resourse.ToUpper();
