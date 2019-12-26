@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using WpfApp2.models;
 
@@ -19,43 +18,41 @@ namespace WpfApp2.livelock
                 {
                     employee_name = "Employee" + j.ToString(),
                     employee_age = new Random().Next(30, 40).ToString(),
-                    is_active = true
-                };
+                    is_waiting = true
+               };
             }
         }
 
         public override async Task showLock(bool enableLock)
         {
-            Task<string> firstTask = Task.Run(async () =>
-            {
-                while (employees[0].is_active)
-                {
-                    await Task.Delay(TASK_SLEEP_DELAY);
-                    runOnUiThread(employees[0]);
-                }
-                employees[1].is_active = false;
-                return employees[1].employee_name + " has completed the task";
-            });
-
-            Task<string> secondTask = Task.Run(async () =>
-            {
-                while (employees[1].is_active)
-                {
-                    await Task.Delay(TASK_SLEEP_DELAY);
-                    runOnUiThread(employees[1]);
-                }
-                employees[0].is_active = false;
-                return employees[0].employee_name + " has completed the task";
-            });
+            Task<string> firstTask = runTask(employees[0], employees[1], enableLock);
+            Task<string> secondTask = runTask(employees[1], employees[0], enableLock);
             var result = await Task.WhenAll(new Task<string>[] { firstTask, secondTask });
-            mWindow.infoLabel.Text = result[0];
+            mWindow.infoLabel.Text = result[0] + "\n" + result[1];
+        }
+
+        private Task<string> runTask(Employee first, Employee second, bool enableLock) {
+
+            return Task.Run(async () =>
+            {
+                if (!enableLock && first.is_waiting && second.is_waiting) {
+                    first.is_waiting = false;
+                }
+                while (first.is_waiting)
+                {
+                    await Task.Delay(TASK_SLEEP_DELAY);
+                    runOnUiThread(first);
+                }
+                second.is_waiting = false;
+                return second.employee_name + " has passed the corridor";
+            });
         }
 
         //Use this method to update ui from background thread
         private void runOnUiThread(Employee emloyee) {
             System.Windows.Application.Current.Dispatcher.Invoke(delegate
             {
-                mWindow.infoLabel.Text = emloyee.employee_name + " is working...";
+                mWindow.infoLabel.Text = emloyee.employee_name + " is waiting...";
             });
         }
 
