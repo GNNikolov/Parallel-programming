@@ -7,7 +7,7 @@ namespace WpfApp2.livelock
     class LiveLock : locks.LockProvider
     {
         private readonly Employee[] employees = new Employee[2];
-        private static readonly int TASK_SLEEP_DELAY = 900;
+        private static readonly int TASK_SLEEP_DELAY = 1250;
 
         public LiveLock(MainWindow mainWindow) : base(mainWindow)
         {
@@ -18,7 +18,7 @@ namespace WpfApp2.livelock
                     employee_name = "Employee" + j.ToString(),
                     employee_age = new Random().Next(30, 40).ToString(),
                     is_waiting = true
-               };
+                };
             }
         }
 
@@ -41,27 +41,34 @@ namespace WpfApp2.livelock
             mWindow.items.Items.Add(result[1]);
         }
 
-        private Task<string> runTask(Employee first, Employee second, bool enableLock) {
+        private Task<string> runTask(Employee first, Employee second, bool enableLock)
+        {
 
             return Task.Run(async () =>
             {
-                if (!enableLock && first.is_waiting && second.is_waiting) {
+                runOnUiThread(first.employee_name + " is waiting.");
+                await Task.Delay(TASK_SLEEP_DELAY/2);
+                if (!enableLock && first.is_waiting && second.is_waiting)
+                {
                     first.is_waiting = false;
                 }
                 while (first.is_waiting)
                 {
-                    runOnUiThread(first.employee_name + " is waiting...");
-                    await Task.Delay(TASK_SLEEP_DELAY);
+                    runOnUiThread(first.employee_name + " is waiting for other to pass...");
+                    await Task.Delay(TASK_SLEEP_DELAY * 2);
                 }
                 //First is passing
                 runOnUiThread(first.employee_name + " is passing...");
+                await Task.Delay(TASK_SLEEP_DELAY / 2);
+                runOnUiThread(first.employee_name + " has passed the corridor");
                 second.is_waiting = false;
-                return first.employee_name + " has passed the corridor";
+                return "\t";
             });
         }
 
         //Use this method to update ui from background thread
-        private void runOnUiThread(string message) {
+        private void runOnUiThread(string message)
+        {
             System.Windows.Application.Current.Dispatcher.Invoke(delegate
             {
                 mWindow.items.Items.Add(message);
