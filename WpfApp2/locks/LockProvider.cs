@@ -18,7 +18,7 @@ namespace WpfApp2.locks
 
         public async virtual Task showLock(bool enableLock)
         {
-            throw new NotImplementedException("Implement your own action!");
+            mWindow.items.Items.Clear();
         }
 
         protected async Task<string> getJsonAsync()

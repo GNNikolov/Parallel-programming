@@ -19,7 +19,8 @@ namespace WpfApp2.deadlock
          */
         override public async Task showLock(bool enableLock)
         {
-            mWindow.infoLabel.Text = "Started...";
+            await base.showLock(enableLock);
+            mWindow.items.Items.Add("Started...");
             var mTask = getJsonAsync();
             if (!enableLock)
             {
@@ -27,8 +28,7 @@ namespace WpfApp2.deadlock
             }
             var response = mTask.Result;
             var employees = decodeData(response);
-
-            mWindow.infoLabel.Text = response;
+            mWindow.items.Items.Add(response);
         }
     }
 }
