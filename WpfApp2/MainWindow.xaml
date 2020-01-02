@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="320" Width="400">
+        Title="Blocking demo" Height="320" Width="400">
     <Grid>
         <ListBox Name="items" Margin="0,8,0,0" VerticalAlignment="Top" Width="340" HorizontalAlignment="Center" Height="156"/>
         <Button Name ="action" Content="Start"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="340" Margin="0,0,0,80" Height="32" Click="onClickListener"/>
