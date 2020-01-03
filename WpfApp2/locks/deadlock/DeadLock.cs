@@ -1,9 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WpfApp2.deadlock
 {
     class DeadLock : locks.LockProvider
     {
+        private readonly static string URL = "http://dummy.restapiexample.com/api/v1/employees";
 
         public DeadLock(MainWindow mWindow) : base(mWindow) { }
 
@@ -29,6 +33,17 @@ namespace WpfApp2.deadlock
             var response = mTask.Result;
             var employees = decodeData(response);
             mWindow.items.Items.Add(response);
+        }
+        private async Task<string> getJsonAsync()
+        {
+            var httpClient = new HttpClient();
+            var mResult = await httpClient.GetStringAsync(URL);
+            return mResult;
+        }
+
+        private List<models.Employee> decodeData(string json)
+        {
+            return JsonConvert.DeserializeObject<List<models.Employee>>(json);
         }
     }
 }
