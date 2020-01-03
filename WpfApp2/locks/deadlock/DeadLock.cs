@@ -32,7 +32,9 @@ namespace WpfApp2.deadlock
             }
             var response = mTask.Result;
             var employees = decodeData(response);
-            mWindow.items.Items.Add(response);
+            foreach (models.Employee data in employees) {
+                mWindow.items.Items.Add(data.employee_name);
+            }
         }
         private async Task<string> getJsonAsync()
         {
