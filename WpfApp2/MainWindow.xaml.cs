@@ -15,7 +15,7 @@ namespace WpfApp2
         private void onClickListener(object sender, RoutedEventArgs e)
         {
             var mLock = new deadlock.DeadLock(this);
-            mLock.showLock(false);
+            mLock.showLock(true);
 
         }
     }
