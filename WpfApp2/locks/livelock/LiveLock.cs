@@ -46,7 +46,7 @@ namespace WpfApp2.livelock
 
             return Task.Run(async () =>
             {
-                runOnUiThread(first.employee_name + " is waiting.");
+                runOnUiThread(first.employee_name + " is staying.");
                 await Task.Delay(TASK_SLEEP_DELAY/2);
                 if (!enableLock && first.is_waiting && second.is_waiting)
                 {
@@ -62,7 +62,7 @@ namespace WpfApp2.livelock
                 await Task.Delay(TASK_SLEEP_DELAY / 2);
                 runOnUiThread(first.employee_name + " has passed the corridor");
                 second.is_waiting = false;
-                return "\t";
+                return "Task finished!";
             });
         }
 
