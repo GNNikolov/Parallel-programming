@@ -94,6 +94,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="locks\LockFactory.cs" />
     <Compile Include="locks\LockProvider.cs" />
     <Compile Include="locks\deadlock\DeadLock.cs" />
     <Compile Include="locks\livelock\LiveLock.cs" />
@@ -104,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="models\Employee.cs" />
+    <Compile Include="models\Lock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

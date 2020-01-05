@@ -12,9 +12,10 @@ namespace WpfApp2
             InitializeComponent();
 
         }
+
         private void onClickListener(object sender, RoutedEventArgs e)
         {
-            var mLock = new livelock.LiveLock(this);
+            var mLock = locks.LockFactory.getLock(this, models.Lock.DEADLOCK);
             mLock.showLock(false);
 
         }
